@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "6a4b2ad9-32eb-4c6a-b325-009303c71e63": {
+      "ProjectGuid": "6a4b2ad9-32eb-4c6a-b325-009303c71e63",
+      "DisplayName": "AToDo.Api",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
