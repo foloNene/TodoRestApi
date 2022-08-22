@@ -6,7 +6,6 @@ C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\bin\Debug\netcoreapp3.1\AToDo.
 C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\bin\Debug\netcoreapp3.1\AToDo.Api.runtimeconfig.dev.json
 C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\bin\Debug\netcoreapp3.1\AToDo.Api.dll
 C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\bin\Debug\netcoreapp3.1\AToDo.Api.pdb
-C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\obj\Debug\netcoreapp3.1\AToDo.Api.csproj.AssemblyReference.cache
 C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\obj\Debug\netcoreapp3.1\AToDo.Api.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\obj\Debug\netcoreapp3.1\AToDo.Api.AssemblyInfoInputs.cache
 C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\obj\Debug\netcoreapp3.1\AToDo.Api.AssemblyInfo.cs
