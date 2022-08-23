@@ -18,6 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace AToDo.Api
 {
     public class Startup
@@ -49,7 +50,8 @@ namespace AToDo.Api
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ValidateLifetime = true,
-                RequireExpirationTime = false
+                RequireExpirationTime = false,
+                ClockSkew = TimeSpan.Zero
             };
 
             services.AddSingleton(tokenValidationParams);
@@ -66,10 +68,21 @@ namespace AToDo.Api
                     jwt.TokenValidationParameters = tokenValidationParams;
                 });
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApiDbContext>();
 
+            
             services.AddControllers();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("DepartmentPolicy",
+                    policy => policy.RequireClaim("department"));
+
+            });
+
+            //Updating the middleare to use versioning.
+            //services.AddApiVersioning();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,4 +106,6 @@ namespace AToDo.Api
             });
         }
     }
+
+
 }

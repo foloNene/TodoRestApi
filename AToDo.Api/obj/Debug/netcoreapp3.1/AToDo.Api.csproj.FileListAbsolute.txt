@@ -71,3 +71,4 @@ C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\bin\Debug\netcoreapp3.1\Micros
 C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\obj\Debug\netcoreapp3.1\AToDo.Api.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\obj\Debug\netcoreapp3.1\staticwebassets\AToDo.Api.StaticWebAssets.xml
+C:\Users\USER\Desktop\Project\AToDo.Api\AToDo.Api\obj\Debug\netcoreapp3.1\AToDo.Api.csproj.AssemblyReference.cache

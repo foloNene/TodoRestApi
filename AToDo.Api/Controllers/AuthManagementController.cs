@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -27,18 +28,23 @@ namespace AToDo.Api.Controllers
         private JwtConfig _jwtConfig;
         private readonly TokenValidationParameters _tokenValidationParams;
         private readonly ApiDbContext _apiDbContext;
-
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger<AuthManagementController> _logger;
 
         public AuthManagementController(
             UserManager<IdentityUser> userManager,
             IOptionsMonitor<JwtConfig> optionsMonitor,
             TokenValidationParameters tokenValidationParams,
-            ApiDbContext apiDbContext)
+            ApiDbContext apiDbContext,
+            RoleManager<IdentityRole> roleManager,
+            ILogger<AuthManagementController> logger)
         {
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
             _tokenValidationParams = tokenValidationParams;
             _apiDbContext = apiDbContext;
+            _roleManager = roleManager;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -73,8 +79,10 @@ namespace AToDo.Api.Controllers
 
                 if (isCreated.Succeeded)
                 {
-                    var jwtToken = await  GenerateJwtToken(newUser);
+                    //we need to add te user to a role
+                    await _userManager.AddToRoleAsync(newUser, "AppUser");
 
+                    var jwtToken = await  GenerateJwtToken(newUser);
 
                     return Ok(jwtToken);
                 }
@@ -195,15 +203,11 @@ namespace AToDo.Api.Controllers
 
             var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
 
+            var claims = await GetAllValidClaims(user);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("Id", user.Id),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddSeconds(30), // 5-10 
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -232,6 +236,49 @@ namespace AToDo.Api.Controllers
                 RefreshToken = refreshToken.Token
             };
         }
+
+        //Get all valid claims for the corresponding user
+        private async Task<List<Claim>> GetAllValidClaims(IdentityUser user)
+        {
+            var _options = new IdentityOptions();
+
+            var claims = new List<Claim>
+            {
+                    new Claim("Id", user.Id),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            //Getting the claims that we have assigned to the user 
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            claims.AddRange(userClaims);
+
+            //Get the user and add it to the claims
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            foreach (var userRole in userRoles)
+            {
+
+                var role = await _roleManager.FindByNameAsync(userRole);
+
+                if (role != null)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, userRole));
+
+                    var roleClaims = await _roleManager.GetClaimsAsync(role);
+                    foreach (var roleClaim in roleClaims)
+                    {
+                        claims.Add(roleClaim);
+                    }
+                }
+            }
+
+            return claims;
+
+        }
+
 
         private async Task<AuthResult> VerifyAndGenerateToken(TokenRequest tokenRequest)
         {

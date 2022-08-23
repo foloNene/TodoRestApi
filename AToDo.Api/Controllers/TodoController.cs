@@ -11,8 +11,8 @@ namespace AToDo.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles ="AppUser")]
+
     public class TodoController : ControllerBase
     {
         private readonly ApiDbContext _context;
@@ -31,6 +31,7 @@ namespace AToDo.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "DepartmentPolicy")]
         public async Task<IActionResult> CreateItem(ItemData data)
         {
             if (ModelState.IsValid)
